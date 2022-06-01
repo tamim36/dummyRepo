@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Factories;
-using NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Models;
-using NopStation.Plugin.Misc.FacebookShop.Services;
+using Nop.Plugin.NopStation.Core.Components;
+using Nop.Plugin.NopStation.FacebookShop.Areas.Admin.Factories;
+using Nop.Plugin.NopStation.FacebookShop.Areas.Admin.Models;
+using Nop.Plugin.NopStation.FacebookShop.Services;
 using Nop.Services.Catalog;
 using Nop.Services.Cms;
 using Nop.Web.Areas.Admin.Models.Catalog;
-using NopStation.Plugin.Misc.Core.Components;
 
-namespace NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Components
+namespace Nop.Plugin.NopStation.FacebookShop.Areas.Admin.Components
 {
     [ViewComponent(Name = FacebookShopDefaults.FACEBOOK_SHOP_ADMIN_VIEW_COMPONENT_NAME)]
     public class FacebookShopAdminViewComponent : NopStationViewComponent
@@ -21,7 +21,7 @@ namespace NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Components
         private readonly IWidgetPluginManager _widgetPluginManager;
         private readonly IProductService _productService;
         private readonly IShopItemModelFactory _shopItemModelFactory;
-        private readonly IFacebookShopService _facebookShopService;
+        private readonly IFacebookShopService _facebookShopService; 
         #endregion
 
         #region Ctor
@@ -34,7 +34,7 @@ namespace NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Components
             _productService = productService;
             _shopItemModelFactory = shopItemModelFactory;
             _facebookShopService = facebookShopService;
-        }
+        } 
         #endregion
 
         #region Properties
@@ -43,7 +43,7 @@ namespace NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Components
             if (additionalData.GetType() != typeof(ProductModel))
                 return Content("");
 
-            if (!await _widgetPluginManager.IsPluginActiveAsync(FacebookShopDefaults.SystemName))
+            if (!await _widgetPluginManager.IsPluginActiveAsync(FacebookShopDefaults.SystemName)) //TODO: get rid of magic string
                 return Content(string.Empty);
 
             var productModel = additionalData as ProductModel;
@@ -56,7 +56,7 @@ namespace NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Components
 
             var model = await _shopItemModelFactory.PrepareShopItemModelAsync((existingShopItem == null ? new ShopItemModel() : null), (existingShopItem == null ? null : existingShopItem), productModel);
             return View(model);
-        }
+        } 
         #endregion
     }
 }

@@ -1,0 +1,255 @@
+﻿@model ShopItemModel
+
+@{
+    Html.AddCssFileParts("~/Plugins/NopStation.FacebookShop/Content/css/Select2.css");
+    Html.AddScriptParts("https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js");
+    Layout = "_AdminLayout";
+    ViewBag.ProductSearchModel = Model.ProductSearchModel;
+}
+
+<script>
+    $(document).ready(function() {
+
+        $("#@Html.IdFor(model => model.IsOverwriteBrandSelected)").change(toggleBrandDiv);
+        toggleBrandDiv();
+
+        $('#@Html.IdFor(model => model.GenderTypeId)').prop('required',true);
+        $('#@Html.IdFor(model => model.GoogleProductCategory)').prop('required',true);
+
+        $.ajax({
+            url: "@Url.Action("GetGoogleProductCategoriesList", "FacebookShop")",
+            type: "GET",
+            success: function(data, textStatus, jqXHR)
+            {
+                var xdata = $.map(data, function (obj) {
+                    obj.text = obj.text || obj.name;
+                    return obj;
+                });
+
+                $('#@Html.IdFor(model => model.GoogleProductCategory)').select2({
+                    width: 'resolve',
+                    data:xdata,
+                    minimumInputLength: 3,
+                    placeholder: 'Enter first 3 letters of Product Category',
+                    allowClear: true
+                });
+                $('#@Html.IdFor(model => model.GoogleProductCategory)').val('@Model.GoogleProductCategory'); // Select the option with a value of '1'
+                $('#@Html.IdFor(model => model.GoogleProductCategory)').trigger('change'); // Notify any JS components that the value changed
+            },
+            error: function (request, textStatus, errorThrown) {
+                console.log(errorThrown);
+            },
+            cache: true
+
+        });
+
+    });
+
+    function toggleBrandDiv() {
+        if ($('#@Html.IdFor(model => model.IsOverwriteBrandSelected)').is(':checked')) {
+            $('#@Html.IdFor(model => model.Brand)').prop('required',true);
+            $('#pnlIsOverwriteBrandSelected').show();
+        } else {
+            $('#@Html.IdFor(model => model.Brand)').prop('required',false);
+            $('#pnlIsOverwriteBrandSelected').hide();
+        }
+    }
+
+</script>
+
+@if (ViewBag.RefreshPage == true)
+{
+    <script>
+        alert("Product Added Successfully!");
+    </script>
+}
+
+<form asp-controller="FacebookShop" asp-action="BulkItemsAddAll">
+    <div style="display: none">
+        <div class="col-md-5">
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <nop-label asp-for="ProductSearchModel.SearchProductName" />
+                </div>
+                <div class="col-md-8">
+                    <nop-editor asp-for="ProductSearchModel.SearchProductName" />
+                </div>
+            </div>
+            <div class="form-group row" @(Model.ProductSearchModel.AvailableCategories.SelectionIsNotPossible() ? Html.Raw("style=\"display:none\"") : null)>
+                <div class="col-md-4">
+                    <nop-label asp-for="ProductSearchModel.SearchCategoryId" />
+                </div>
+                <div class="col-md-8">
+                    <nop-select asp-for="ProductSearchModel.SearchCategoryId" asp-items="Model.ProductSearchModel.AvailableCategories" />
+                </div>
+            </div>
+            <div class="form-group row" @(Model.ProductSearchModel.AvailableCategories.SelectionIsNotPossible() ? Html.Raw("style=\"display:none\"") : null)>
+                <div class="col-md-4">
+                    <nop-label asp-for="ProductSearchModel.SearchIncludeSubCategories" />
+                </div>
+                <div class="col-md-8">
+                    <nop-editor asp-for="ProductSearchModel.SearchIncludeSubCategories" />
+                </div>
+            </div>
+            <div class="form-group row" @(Model.ProductSearchModel.AvailableManufacturers.SelectionIsNotPossible() ? Html.Raw("style=\"display:none\"") : null)>
+                <div class="col-md-4">
+                    <nop-label asp-for="ProductSearchModel.SearchManufacturerId" />
+                </div>
+                <div class="col-md-8">
+                    <nop-select asp-for="ProductSearchModel.SearchManufacturerId" asp-items="Model.ProductSearchModel.AvailableManufacturers" />
+                </div>
+            </div>
+            <div class="form-group row" @(Model.ProductSearchModel.AvailableVendors.SelectionIsNotPossible() || Model.ProductSearchModel.IsLoggedInAsVendor ? Html.Raw("style='display: none;' ") : null)>
+                <div class="col-md-4">
+                    <nop-label asp-for="ProductSearchModel.SearchVendorId" />
+                </div>
+                <div class="col-md-8">
+                    <nop-select asp-for="ProductSearchModel.SearchVendorId" asp-items="Model.ProductSearchModel.AvailableVendors" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div class="form-group row" @(Model.ProductSearchModel.HideStoresList ? Html.Raw("style=\"display:none\"") : null)>
+                <div class="col-md-4">
+                    <nop-label asp-for="ProductSearchModel.SearchStoreId" />
+                </div>
+                <div class="col-md-8">
+                    <nop-select asp-for="ProductSearchModel.SearchStoreId" asp-items="Model.ProductSearchModel.AvailableStores" />
+                </div>
+            </div>
+            <div class="form-group row" @(Model.ProductSearchModel.AvailableWarehouses.SelectionIsNotPossible() ? Html.Raw("style=\"display:none\"") : null)>
+                <div class="col-md-4">
+                    <nop-label asp-for="ProductSearchModel.SearchWarehouseId" />
+                </div>
+                <div class="col-md-8">
+                    <nop-select asp-for="ProductSearchModel.SearchWarehouseId" asp-items="Model.ProductSearchModel.AvailableWarehouses" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <nop-label asp-for="ProductSearchModel.SearchProductTypeId" />
+                </div>
+                <div class="col-md-8">
+                    <nop-select asp-for="ProductSearchModel.SearchProductTypeId" asp-items="Model.ProductSearchModel.AvailableProductTypes" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <nop-label asp-for="ProductSearchModel.SearchPublishedId" />
+                </div>
+                <div class="col-md-8">
+                    <nop-select asp-for="ProductSearchModel.SearchPublishedId" asp-items="Model.ProductSearchModel.AvailablePublishedOptions" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <nop-label asp-for="ProductSearchModel.GoDirectlyToSku" />
+                </div>
+                <div class="col-md-8">
+                    <div class="input-group input-group-short">
+                        <nop-editor asp-for="ProductSearchModel.GoDirectlyToSku" />
+                        <span class="input-group-append">
+                            <button type="submit" id="go-to-product-by-sku" name="go-to-product-by-sku" class="btn btn-info btn-flat">
+                                @T("Admin.Common.Go")
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-header clearfix">
+        <h1 class="float-left">
+            @T("Admin.NopStation.FacebookShop.AddValueForSelectedProduct")
+        </h1>
+        <div class="float-right">
+            &nbsp;
+        </div>
+    </div>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="form-horizontal">
+                <div class="cards-group">
+                    <div class="card card-default card-search card-popup">
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <nop-label asp-for="GenderTypeId" />
+                                </div>
+                                <div class="col-md-9">
+                                    <nop-select asp-for="GenderTypeId" asp-items="@Model.AvailableGenders" asp-required="true" />
+                                    <span asp-validation-for="GenderTypeId"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <nop-label asp-for="AgeGroupType" />
+                                </div>
+                                <div class="col-md-9">
+                                    <nop-select asp-for="AgeGroupType" asp-items="@Model.AvailableAgeGroups" asp-required="true" />
+                                    <span asp-validation-for="AgeGroupType"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <nop-label asp-for="GoogleProductCategory" />
+                                </div>
+                                <div class="col-md-9">
+                                    <select asp-for="GoogleProductCategory" style="width: 98.50%;"></select>
+                                    <span asp-validation-for="GoogleProductCategory"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <nop-label asp-for="IsOverwriteBrandSelected" />
+                                </div>
+                                <div class="col-md-9">
+                                    <nop-editor asp-for="IsOverwriteBrandSelected" />
+                                </div>
+                            </div>
+                            <nop-nested-setting asp-for="IsOverwriteBrandSelected" id="pnlIsOverwriteBrandSelected">
+                                @(await Html.LocalizedEditorAsync<ShopItemModel, ShopItemLocalizedModel>
+                                    ("shopitem-info-localized",
+                                        @<div>
+                                            <div class="form-group row">
+                                                <div class="col-md-3">
+                                                    <nop-label asp-for="@Model.Locales[item].Brand"/>
+                                                </div>
+                                                <div class="col-md-9">
+                                                    <nop-editor asp-for="@Model.Locales[item].Brand"/>
+                                                    <span asp-validation-for="@Model.Locales[item].Brand"></span>
+                                                </div>
+                                            </div>
+
+                                            <input type="hidden" asp-for="@Model.Locales[item].LanguageId"/>
+                                        </div>
+                                        , @<div>
+                                              <div class="form-group row">
+                                                  <div class="col-md-3">
+                                                      <nop-label asp-for="Brand"/>
+                                                  </div>
+                                                  <div class="col-md-9">
+                                                      <nop-editor asp-for="Brand" asp-required="true"/>
+                                                      <span asp-validation-for="Brand"></span>
+                                                  </div>
+                                              </div>
+                                          </div>)
+                                    )
+                            </nop-nested-setting>
+                        </div>
+                        <input type="hidden" asp-for="@Model.ProductSearchModel" />
+
+                        <div class="card-footer">
+                            <button type="submit" name="save" class="btn btn-primary" onclick="closeWindow()">
+                                <i class="far fa-save"></i>
+                                @T("Admin.Common.Save")
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>

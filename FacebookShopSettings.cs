@@ -1,6 +1,6 @@
 ﻿using Nop.Core.Configuration;
 
-namespace NopStation.Plugin.Misc.FacebookShop
+namespace Nop.Plugin.NopStation.FacebookShop
 {
     public class FacebookShopSettings : ISettings
     {

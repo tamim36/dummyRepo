@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NopStation.Plugin.Misc.FacebookShop.Domains
+namespace Nop.Plugin.NopStation.FacebookShop.Domains
 {
     public enum GenderType
     {

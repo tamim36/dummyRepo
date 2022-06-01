@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Nop.Web.Models.Media;
 
-namespace NopStation.Plugin.Misc.FacebookShop.Models
+namespace Nop.Plugin.NopStation.FacebookShop.Models
 {
     public partial class FacebookShopProductModel
     {
@@ -14,7 +14,7 @@ namespace NopStation.Plugin.Misc.FacebookShop.Models
             DefaultPictureModel = new PictureModel();
             ProductPrice = new ProductPriceModel();
         }
-
+        
         // pictures
         public PictureModel DefaultPictureModel { get; set; }
         //additional images
@@ -78,5 +78,5 @@ namespace NopStation.Plugin.Misc.FacebookShop.Models
         }
 
     }
-
+    
 }

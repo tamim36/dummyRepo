@@ -1,21 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using LinqToDB;
+using Microsoft.AspNetCore.Http;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Nop.Core;
 using Nop.Core.Domain.Catalog;
+using Nop.Core.Infrastructure;
 using Nop.Data;
-using NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Models;
-using NopStation.Plugin.Misc.FacebookShop.Domains;
+using Nop.Plugin.NopStation.FacebookShop.Areas.Admin.Models;
+using Nop.Plugin.NopStation.FacebookShop.Domains;
 using Nop.Services.Security;
 using Nop.Services.Stores;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
-using Nop.Core.Infrastructure;
-using System.IO;
-using Microsoft.AspNetCore.Http;
+using Nop.Web.Areas.Admin.Models.Catalog;
 
-namespace NopStation.Plugin.Misc.FacebookShop.Services
+namespace Nop.Plugin.NopStation.FacebookShop.Services
 {
     public partial class FacebookShopService : IFacebookShopService
     {
@@ -27,6 +29,7 @@ namespace NopStation.Plugin.Misc.FacebookShop.Services
         private readonly IAclService _aclService;
         private readonly IStoreMappingService _storeMappingService;
         private readonly INopFileProvider _nopFileProvider;
+
         #endregion
 
         #region ctor
@@ -35,8 +38,7 @@ namespace NopStation.Plugin.Misc.FacebookShop.Services
           IRepository<ProductWarehouseInventory> productWarehouseInventoryRepository,
           IWorkContext workContext,
           IAclService aclService,
-          IStoreMappingService storeMappingService,
-          INopFileProvider nopFileProvider)
+          IStoreMappingService storeMappingService, INopFileProvider nopFileProvider)
         {
             _shopItemRepository = shopItemRepository;
             _productRepository = productRepository;
@@ -87,6 +89,7 @@ namespace NopStation.Plugin.Misc.FacebookShop.Services
 
             await _shopItemRepository.InsertAsync(item);
         }
+
         public async Task InsertShopItemAsync(List<ShopItem> item)
         {
             if (item == null)
@@ -94,6 +97,7 @@ namespace NopStation.Plugin.Misc.FacebookShop.Services
 
             await _shopItemRepository.InsertAsync(item);
         }
+
         public async Task<IPagedList<ShopItemAssociateWithProduct>> GetShopItemAssociateWithProducts(int pageIndex = 0,
             int pageSize = int.MaxValue,
             IList<int> categoryIds = null,
@@ -208,27 +212,28 @@ namespace NopStation.Plugin.Misc.FacebookShop.Services
                 };
                 shopItemsToBeInserted.Add(newShopItem);
             }
+
             await InsertShopItemAsync(shopItemsToBeInserted);
         }
-
         public async Task BulkInsertAllFoundShopItemsAsync(ShopItem shopItem, int[] productIdsToAdd)
         {
             var existingShopItemsProductIds = await (from shopItemTableItem in _shopItemRepository.Table
-                select shopItemTableItem.ProductId).ToArrayAsync();
+                                                         select shopItemTableItem.ProductId).ToArrayAsync();
             productIdsToAdd = productIdsToAdd.Except(existingShopItemsProductIds).ToArray();
 
             var shopItemsToBeInserted = productIdsToAdd.Select(productId => new ShopItem
-                {
-                    ProductId = productId,
-                    IncludeInFacebookShop = true,
-                    GenderTypeId = shopItem.GenderTypeId,
-                    GoogleProductCategory = shopItem.GoogleProductCategory,
-                    Brand = shopItem.Brand,
-                })
+            {
+                ProductId = productId,
+                IncludeInFacebookShop = true,
+                GenderTypeId = shopItem.GenderTypeId,
+                GoogleProductCategory = shopItem.GoogleProductCategory,
+                Brand = shopItem.Brand,
+            })
                 .ToList();
 
             await InsertShopItemAsync(shopItemsToBeInserted);
         }
+
         public async Task BulkDeleteShopItemAsync(string productIds)
         {
             var productItemsId = productIds != null ? productIds.Split(",").Select(int.Parse).ToArray() : Array.Empty<int>();
@@ -243,12 +248,11 @@ namespace NopStation.Plugin.Misc.FacebookShop.Services
                 }
             }
             await DeleteShopItemAsync(shopItemsToBeDeleted);
-
         }
         public async Task BulkDeleteAllFoundShopItemAsync(int[] productIdsToAdd)
         {
             var existingShopItemsProductIds = await (from shopItemTableItem in _shopItemRepository.Table
-                select shopItemTableItem.ProductId).ToArrayAsync();
+                                                         select shopItemTableItem.ProductId).ToArrayAsync();
 
             var shopItemsToBeDeleted = new List<ShopItem>();
             //existingShopItemsProductIds.Exist

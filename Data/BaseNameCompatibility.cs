@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Nop.Data.Mapping;
-using NopStation.Plugin.Misc.FacebookShop.Domains;
+using Nop.Plugin.NopStation.FacebookShop.Domains;
 
-namespace NopStation.Plugin.Misc.FacebookShop.Data
+namespace Nop.Plugin.NopStation.FacebookShop.Data
 {
     public class BaseNameCompatibility : INameCompatibility
     {

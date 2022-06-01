@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Factories;
-using NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Models;
-using NopStation.Plugin.Misc.FacebookShop.Services;
+using Nop.Plugin.NopStation.Core.Components;
+using Nop.Plugin.NopStation.FacebookShop.Areas.Admin.Factories;
+using Nop.Plugin.NopStation.FacebookShop.Areas.Admin.Models;
+using Nop.Plugin.NopStation.FacebookShop.Services;
 using Nop.Services.Catalog;
 using Nop.Services.Cms;
 using Nop.Web.Areas.Admin.Models.Catalog;
-using NopStation.Plugin.Misc.Core.Components;
 
-namespace NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Components
+namespace Nop.Plugin.NopStation.FacebookShop.Areas.Admin.Components
 {
     [ViewComponent(Name = FacebookShopDefaults.BULK_UPLOAD_SHOP_ITEMS_VIEW_COMPONENT_NAME)]
     public class ProductItemsBulkUploadViewComponent : NopStationViewComponent

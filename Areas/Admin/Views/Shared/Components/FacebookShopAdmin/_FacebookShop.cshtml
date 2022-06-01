@@ -1,8 +1,8 @@
 ﻿@model ShopItemModel
 
 @{
-    NopHtml.AddCssFileParts("/Plugins/NopStation.Plugin.Misc.FacebookShop/contents/css/Select2.css",string.Empty);
-    NopHtml.AddScriptParts(ResourceLocation.Head,"https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js");
+    Html.AddCssFileParts("~/Plugins/NopStation.FacebookShop/Content/css/Select2.css");
+    Html.AddScriptParts("https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js");
 }
 
 <script>
@@ -83,6 +83,7 @@
                 <span asp-validation-for="GenderTypeId"></span>
             </div>
         </div>
+
         <div class="form-group row">
             <div class="col-md-3">
                 <nop-label asp-for="AgeGroupType" />
@@ -92,6 +93,16 @@
                 <span asp-validation-for="AgeGroupType"></span>
             </div>
         </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-label asp-for="ProductCondition" />
+            </div>
+            <div class="col-md-9">
+                <nop-select asp-for="ProductCondition" asp-items="@Model.AvailableProductConditions" asp-required="true" />
+                <span asp-validation-for="ProductCondition"></span>
+            </div>
+        </div>
+
         <div class="form-group row">
             <div class="col-md-3">
                 <nop-label asp-for="GoogleProductCategory" />
@@ -108,6 +119,14 @@
             </div>
             <div class="col-md-9">
                 <nop-editor asp-for="IsOverwriteBrandSelected" />
+            </div>
+        </div> 
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-label asp-for="CustomImageUrl" />
+            </div>
+            <div class="col-md-9">
+                <nop-editor asp-for="CustomImageUrl" />
             </div>
         </div>
         <nop-nested-setting asp-for="IsOverwriteBrandSelected" id="pnlIsOverwriteBrandSelected">

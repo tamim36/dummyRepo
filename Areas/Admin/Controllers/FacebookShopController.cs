@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,11 +12,14 @@ using Newtonsoft.Json;
 using Nop.Core;
 using Nop.Core.Domain.Catalog;
 using Nop.Core.Infrastructure;
+using Nop.Plugin.NopStation.Core.Controllers;
+using Nop.Plugin.NopStation.Core.Filters;
+using Nop.Plugin.NopStation.Core.Helpers;
+using Nop.Plugin.NopStation.FacebookShop.Areas.Admin.Factories;
+using Nop.Plugin.NopStation.FacebookShop.Areas.Admin.Models;
+using Nop.Plugin.NopStation.FacebookShop.Domains;
+using Nop.Plugin.NopStation.FacebookShop.Services;
 using Nop.Services.Catalog;
-using NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Factories;
-using NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Models;
-using NopStation.Plugin.Misc.FacebookShop.Domains;
-using NopStation.Plugin.Misc.FacebookShop.Services;
 using Nop.Services.Configuration;
 using Nop.Services.Localization;
 using Nop.Services.Logging;
@@ -23,12 +27,8 @@ using Nop.Services.Messages;
 using Nop.Services.Security;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
 using Nop.Web.Areas.Admin.Models.Catalog;
-using NopStation.Plugin.Misc.Core.Controllers;
-using NopStation.Plugin.Misc.Core.Filters;
-using NopStation.Plugin.Misc.Core.Helpers;
-using System.IO;
 
-namespace NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Controllers
+namespace Nop.Plugin.NopStation.FacebookShop.Areas.Admin.Controllers
 {
     public class FacebookShopController : NopStationAdminController
     {
@@ -41,10 +41,9 @@ namespace NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Controllers
         private readonly ILocalizationService _localizationService;
         private readonly IShopItemModelFactory _shopItemModelFactory;
         private readonly IFacebookShopService _facebookShopService;
-         private readonly IWorkContext _workContext;
+        private readonly IWorkContext _workContext;
         private readonly ICategoryService _categoryService;
         private readonly IProductService _productService;
-
 
         #endregion
 
@@ -105,7 +104,7 @@ namespace NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Controllers
             try
             {
                 var nopFileProvider = NopInstance.Load<INopFileProvider>();
-                var filePath = nopFileProvider.Combine(nopFileProvider.MapPath("~/Plugins/NopStation.Plugin.Misc.FacebookShop/"), "GoogleProductCategories.json");
+                var filePath = nopFileProvider.Combine(nopFileProvider.MapPath("~/Plugins/NopStation.FacebookShop/"), "GoogleProductCategories.json");
 
                 if (nopFileProvider.FileExists(filePath))
                 {
@@ -141,9 +140,8 @@ namespace NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Controllers
         {
             ViewBag.RefreshPage = false;
             var model = await _shopItemModelFactory.PrepareShopItemModelAsync(new ShopItemModel(), null, new ProductModel());
-            return View(model);
+            return View("_BulkItemsAddPopup", model);
         }
-
         [HttpPost]
         public virtual async Task<IActionResult> BulkItemsAddPopup(string productIds, ShopItemModel model)
         {
@@ -159,9 +157,8 @@ namespace NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Controllers
 
                 return BadRequest(ex.Message);
             }
-            return View(model);
+            return View("_BulkItemsAddPopup", model);
         }
-
 
         [HttpPost]
         public virtual async Task<IActionResult> BulkItemsAddAllView(ProductSearchModel productSearchModel)
@@ -171,7 +168,7 @@ namespace NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Controllers
 
             var model = await _shopItemModelFactory.PrepareShopItemModelAsync(shopItemModel, null, new ProductModel());
 
-            return View(model);
+            return View("_BulkItemsAddAllView", model);
         }
         [HttpPost]
         public virtual async Task<IActionResult> BulkItemsAddAll(ShopItemModel model)
@@ -287,12 +284,12 @@ namespace NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Controllers
 
         [HttpPost]
         public async Task<IActionResult> UploadFacebookCatalogCsvFile(CsvFileUpdateModel model)
-        {
+        { 
             try
             {
                 if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageProducts))
                     return AccessDeniedView();
-                if (model.CatalogFile == null)
+                if (model.CatalogFile== null)
                 {
                     _notificationService.WarningNotification(await _localizationService.GetResourceAsync("Admin.NopStation.FacebookShop.FileRequired"));
                     return View();

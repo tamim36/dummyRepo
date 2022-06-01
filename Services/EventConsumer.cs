@@ -12,8 +12,8 @@ using Microsoft.Extensions.Primitives;
 using Nop.Core.Domain.Catalog;
 using Nop.Core.Events;
 using Nop.Core.Infrastructure;
-using NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Models;
-using NopStation.Plugin.Misc.FacebookShop.Domains;
+using Nop.Plugin.NopStation.FacebookShop.Areas.Admin.Models;
+using Nop.Plugin.NopStation.FacebookShop.Domains;
 using Nop.Services.Catalog;
 using Nop.Services.Events;
 using Nop.Services.Localization;
@@ -21,7 +21,7 @@ using Nop.Web.Areas.Admin.Models.Catalog;
 using Nop.Web.Framework.Events;
 using Nop.Web.Framework.Models;
 
-namespace NopStation.Plugin.Misc.FacebookShop.Services
+namespace Nop.Plugin.NopStation.FacebookShop.Services
 {
     public class EventConsumer : IConsumer<ModelReceivedEvent<BaseNopModel>>
     {
@@ -93,6 +93,10 @@ namespace NopStation.Plugin.Misc.FacebookShop.Services
                 item.Brand = brand;
             if (CheckFormValue("AgeGroupType", out var ageGroupType))
                 item.AgeGroupType = ageGroupType;
+            if (CheckFormValue("CustomImageUrl", out var customImageUrl))
+                item.CustomImageUrl = customImageUrl;
+            if (CheckFormValue("ProductCondition", out var productCondition))
+                item.ProductCondition = Convert.ToInt32(productCondition);
             if (isNew)
             {
                 await _facebookShopService.InsertShopItemAsync(item);

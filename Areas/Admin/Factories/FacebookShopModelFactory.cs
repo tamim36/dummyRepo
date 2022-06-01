@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Nop.Core;
-using NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Models;
+using Nop.Plugin.NopStation.FacebookShop.Areas.Admin.Models;
 using Nop.Services.Configuration;
 using Nop.Services.Directory;
 using Nop.Services.Localization;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
 using Nop.Web.Models.Common;
 
-namespace NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Factories
+namespace Nop.Plugin.NopStation.FacebookShop.Areas.Admin.Factories
 {
     public partial class FacebookShopModelFactory : IFacebookShopModelFactory
     {
@@ -20,7 +20,7 @@ namespace NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Factories
         private readonly IStoreContext _storeContext;
         private readonly ISettingService _settingService;
         private readonly ILanguageService _languageService;
-        private readonly ICurrencyService _currencyService;
+        private readonly ICurrencyService _currencyService; 
         #endregion
 
         #region Ctor
@@ -33,7 +33,7 @@ namespace NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Factories
             _settingService = settingService;
             _languageService = languageService;
             _currencyService = currencyService;
-        }
+        } 
         #endregion
 
         #region Utilites
@@ -103,7 +103,7 @@ namespace NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Factories
             return model;
 
 
-        }
+        } 
         #endregion
     }
 }

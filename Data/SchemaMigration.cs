@@ -1,11 +1,11 @@
 ﻿using FluentMigrator;
-using Nop.Data.Extensions;
 using Nop.Data.Migrations;
-using NopStation.Plugin.Misc.FacebookShop.Domains;
+using Nop.Plugin.NopStation.FacebookShop.Domains;
 
-namespace NopStation.Plugin.Misc.FacebookShop.Data
+namespace Nop.Plugin.NopStation.FacebookShop.Data
 {
-    [NopMigration("2021/03/31 08:15:54:1687511", "NopStation.Plugin.Misc.FacebookShop base schema")]
+    [SkipMigrationOnUpdate]
+    [NopMigration("2021/03/31 08:15:54:1687511", "NopStation.FacebookShop base schema")]
     public class SchemaMigration : AutoReversingMigration
     {
         private readonly IMigrationManager _migrationManager;
@@ -17,7 +17,7 @@ namespace NopStation.Plugin.Misc.FacebookShop.Data
 
         public override void Up()
         {
-            Create.TableFor<ShopItem>();
+            _migrationManager.BuildTable<ShopItem>(Create);
         }
     }
 }

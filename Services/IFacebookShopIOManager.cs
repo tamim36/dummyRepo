@@ -1,11 +1,11 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NopStation.Plugin.Misc.FacebookShop.Domains;
+using Nop.Plugin.NopStation.FacebookShop.Domains;
 
-namespace NopStation.Plugin.Misc.FacebookShop.Services
+namespace Nop.Plugin.NopStation.FacebookShop.Services
 {
     public partial interface IFacebookShopIOManager
     {

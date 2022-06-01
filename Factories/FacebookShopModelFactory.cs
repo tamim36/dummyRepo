@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Nop.Core;
@@ -9,8 +10,8 @@ using Nop.Core.Domain.Directory;
 using Nop.Core.Domain.Localization;
 using Nop.Core.Domain.Media;
 using Nop.Core.Domain.Orders;
-using NopStation.Plugin.Misc.FacebookShop.Domains;
-using NopStation.Plugin.Misc.FacebookShop.Models;
+using Nop.Plugin.NopStation.FacebookShop.Domains;
+using Nop.Plugin.NopStation.FacebookShop.Models;
 using Nop.Services.Catalog;
 using Nop.Services.Directory;
 using Nop.Services.Localization;
@@ -20,7 +21,7 @@ using Nop.Services.Tax;
 using Nop.Web.Infrastructure.Cache;
 using Nop.Web.Models.Media;
 
-namespace NopStation.Plugin.Misc.FacebookShop.Factories
+namespace Nop.Plugin.NopStation.FacebookShop.Factories
 {
     public partial class FacebookShopModelFactory : IFacebookShopModelFactory
     {
@@ -234,13 +235,10 @@ namespace NopStation.Plugin.Misc.FacebookShop.Factories
                     if (finalPriceWithoutDiscountBase != oldPriceBase && oldPriceBase > decimal.Zero)
                         model.OldPrice = Convert.ToString(oldPrice);
 
-
                     model.Price = Convert.ToString(finalPriceWithoutDiscount);
-
 
                     if (finalPriceWithoutDiscountBase != finalPriceWithDiscountBase)
                         model.PriceWithDiscount = Convert.ToString(finalPriceWithDiscount);
-
 
                     model.PriceValue = finalPriceWithDiscount;
 
@@ -288,7 +286,7 @@ namespace NopStation.Plugin.Misc.FacebookShop.Factories
                 Brand = await _localizationService.GetLocalizedAsync(item, x => x.Brand, (await GetPrimaryLanguageAsync()).Id),
                 GoogleCategory = item.GoogleProductCategory.Equals(0) ? string.Empty : Convert.ToString(item.GoogleProductCategory),
                 StockAvailability = await _productService.FormatStockMessageAsync(product, string.Empty),
-                Condition = "New"
+                Condition = item.ProductConditionType.ToString()
             };
 
             //Pictures

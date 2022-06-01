@@ -2,11 +2,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nop.Core.Infrastructure;
-using NopStation.Plugin.Misc.FacebookShop.Factories;
-using NopStation.Plugin.Misc.FacebookShop.Services;
-using NopStation.Plugin.Misc.Core.Infrastructure;
+using Nop.Plugin.NopStation.Core.Infrastructure;
 
-namespace NopStation.Plugin.Misc.FacebookShop.Infrastructure
+namespace Nop.Plugin.NopStation.FacebookShop.Infrastructure
 {
     public class PluginNopStartup : INopStartup
     {
@@ -18,11 +16,7 @@ namespace NopStation.Plugin.Misc.FacebookShop.Infrastructure
 
         public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddNopStationServices("NopStation.Plugin.Misc.FacebookShop");
-
-            services.AddScoped<IFacebookShopService, FacebookShopService>();
-            services.AddScoped<IFacebookShopModelFactory, FacebookShopModelFactory>();
-            services.AddScoped<IFacebookShopIOManager, FacebookShopIOManager>();
+            services.AddNopStationServices("NopStation.FacebookShop");
         }
     }
 }

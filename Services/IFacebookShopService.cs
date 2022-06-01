@@ -3,9 +3,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Nop.Core;
 using Nop.Core.Domain.Catalog;
-using NopStation.Plugin.Misc.FacebookShop.Domains;
+using Nop.Plugin.NopStation.FacebookShop.Domains;
+using Nop.Web.Areas.Admin.Models.Catalog;
 
-namespace NopStation.Plugin.Misc.FacebookShop.Services
+namespace Nop.Plugin.NopStation.FacebookShop.Services
 {
     public partial interface IFacebookShopService
     {
@@ -16,7 +17,6 @@ namespace NopStation.Plugin.Misc.FacebookShop.Services
         Task InsertShopItemAsync(ShopItem item);
         Task InsertShopItemAsync(List<ShopItem> item);
 
-
         Task UpdateShopItemAsync(ShopItem item);
 
         Task DeleteShopItemAsync(ShopItem item);
@@ -25,7 +25,7 @@ namespace NopStation.Plugin.Misc.FacebookShop.Services
 
         Task<IPagedList<ShopItem>> SearchShopItemsAsync(int pageIndex = 0, int pageSize = int.MaxValue);
 
-
+        
         Task<IPagedList<ShopItemAssociateWithProduct>> GetShopItemAssociateWithProducts(
             int pageIndex = 0,
             int pageSize = int.MaxValue,
@@ -56,6 +56,8 @@ namespace NopStation.Plugin.Misc.FacebookShop.Services
 
         Task BulkDeleteShopItemAsync(string productIds);
         Task BulkDeleteAllFoundShopItemAsync(int[] productIdsToAdd);
+
         Task UploadFacebookCatalogCsvFileAsync(IFormFile catalogFile);
+
     }
-}
+} 

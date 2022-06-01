@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Nop.Web.Framework.Models;
 using Nop.Web.Framework.Mvc.ModelBinding;
 
-namespace NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Models
+namespace Nop.Plugin.NopStation.FacebookShop.Areas.Admin.Models
 {
     public record ConfigurationModel : BaseNopModel, ISettingsModel
     {

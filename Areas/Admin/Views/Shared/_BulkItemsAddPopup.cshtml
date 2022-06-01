@@ -1,0 +1,168 @@
+﻿@model ShopItemModel
+
+@{
+    Html.AddCssFileParts("~/Plugins/NopStation.FacebookShop/Content/css/Select2.css");
+    Html.AddScriptParts("https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js");
+    Layout = "_AdminPopupLayout";
+}
+
+<script>
+    $(document).ready(function() {
+
+        $("#@Html.IdFor(model => model.IsOverwriteBrandSelected)").change(toggleBrandDiv);
+        toggleBrandDiv();
+
+        $('#@Html.IdFor(model => model.GenderTypeId)').prop('required',true);
+        $('#@Html.IdFor(model => model.GoogleProductCategory)').prop('required',true);
+
+        $.ajax({
+            url: "@Url.Action("GetGoogleProductCategoriesList", "FacebookShop")",
+            type: "GET",
+            success: function(data, textStatus, jqXHR)
+            {
+                var xdata = $.map(data, function (obj) {
+                    obj.text = obj.text || obj.name;
+                    return obj;
+                });
+
+                $('#@Html.IdFor(model => model.GoogleProductCategory)').select2({
+                    width: 'resolve',
+                    data:xdata,
+                    minimumInputLength: 3,
+                    placeholder: 'Enter first 3 letters of Product Category',
+                    allowClear: true
+                });
+                $('#@Html.IdFor(model => model.GoogleProductCategory)').val('@Model.GoogleProductCategory'); // Select the option with a value of '1'
+                $('#@Html.IdFor(model => model.GoogleProductCategory)').trigger('change'); // Notify any JS components that the value changed
+            },
+            error: function (request, textStatus, errorThrown) {
+                console.log(errorThrown);
+            },
+            cache: true
+
+        });
+
+    });
+
+    function toggleBrandDiv() {
+        if ($('#@Html.IdFor(model => model.IsOverwriteBrandSelected)').is(':checked')) {
+            $('#@Html.IdFor(model => model.Brand)').prop('required',true);
+            $('#pnlIsOverwriteBrandSelected').show();
+        } else {
+            $('#@Html.IdFor(model => model.Brand)').prop('required',false);
+            $('#pnlIsOverwriteBrandSelected').hide();
+        }
+    }
+
+</script>
+
+@if (ViewBag.RefreshPage == true)
+{
+    <script>
+        alert("Product Added Successfully!");
+        window.close();
+    </script>
+}
+
+<form asp-controller="FacebookShop" asp-action="BulkItemsAddPopup"
+      asp-route-productIds="@Context.Request.Query["productIds"]">
+    <div class="content-header clearfix">
+        <h1 class="float-left">
+            @T("Admin.NopStation.FacebookShop.AddValueForSelectedProduct")
+        </h1>
+        <div class="float-right">
+            &nbsp;
+        </div>
+    </div>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="form-horizontal">
+                <div class="cards-group">
+                    <div class="card card-default card-search card-popup">
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <nop-label asp-for="GenderTypeId" />
+                                </div>
+                                <div class="col-md-9">
+                                    <nop-select asp-for="GenderTypeId" asp-items="@Model.AvailableGenders" asp-required="true" />
+                                    <span asp-validation-for="GenderTypeId"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <nop-label asp-for="AgeGroupType" />
+                                </div>
+                                <div class="col-md-9">
+                                    <nop-select asp-for="AgeGroupType" asp-items="@Model.AvailableAgeGroups" asp-required="true" />
+                                    <span asp-validation-for="AgeGroupType"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <nop-label asp-for="ProductCondition" />
+                                </div>
+                                <div class="col-md-9">
+                                    <nop-select asp-for="ProductCondition" asp-items="@Model.AvailableProductConditions" asp-required="true" />
+                                    <span asp-validation-for="ProductCondition"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <nop-label asp-for="GoogleProductCategory" />
+                                </div>
+                                <div class="col-md-9">
+                                    <select asp-for="GoogleProductCategory" style="width: 98.50%;"></select>
+                                    <span asp-validation-for="GoogleProductCategory"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <nop-label asp-for="IsOverwriteBrandSelected" />
+                                </div>
+                                <div class="col-md-9">
+                                    <nop-editor asp-for="IsOverwriteBrandSelected" />
+                                </div>
+                            </div>
+                            <nop-nested-setting asp-for="IsOverwriteBrandSelected" id="pnlIsOverwriteBrandSelected">
+                                @(await Html.LocalizedEditorAsync<ShopItemModel, ShopItemLocalizedModel>("shopitem-info-localized",
+                                    @<div>
+                                        <div class="form-group row">
+                                            <div class="col-md-3">
+                                                <nop-label asp-for="@Model.Locales[item].Brand" />
+                                            </div>
+                                            <div class="col-md-9">
+                                                <nop-editor asp-for="@Model.Locales[item].Brand" />
+                                                <span asp-validation-for="@Model.Locales[item].Brand"></span>
+                                            </div>
+                                        </div>
+
+                                        <input type="hidden" asp-for="@Model.Locales[item].LanguageId" />
+                                    </div>
+                                , @<div>
+                                        <div class="form-group row">
+                                            <div class="col-md-3">
+                                                <nop-label asp-for="Brand" />
+                                            </div>
+                                            <div class="col-md-9">
+                                                <nop-editor asp-for="Brand" asp-required="true" />
+                                                <span asp-validation-for="Brand"></span>
+                                            </div>
+                                        </div>
+                                    </div>)
+                                )
+                            </nop-nested-setting>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" name="save" class="btn btn-primary" onclick="closeWindow()">
+                                <i class="far fa-save"></i>
+                                @T("Admin.Common.Save")
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>

@@ -3,7 +3,7 @@ using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Security;
 using Nop.Services.Security;
 
-namespace NopStation.Plugin.Misc.FacebookShop
+namespace Nop.Plugin.NopStation.FacebookShop
 {
     public class FacebookShopPermissionProvider : IPermissionProvider
     {

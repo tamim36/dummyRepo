@@ -18,12 +18,13 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Nop.Core;
 using Nop.Core.Domain.Catalog;
+using Nop.Core.Domain.Media;
 using Nop.Core.Domain.Orders;
 using Nop.Core.Infrastructure;
 using Nop.Data;
-using NopStation.Plugin.Misc.FacebookShop.Domains;
-using NopStation.Plugin.Misc.FacebookShop.Factories;
-using NopStation.Plugin.Misc.FacebookShop.Models;
+using Nop.Plugin.NopStation.FacebookShop.Domains;
+using Nop.Plugin.NopStation.FacebookShop.Factories;
+using Nop.Plugin.NopStation.FacebookShop.Models;
 using Nop.Services.Catalog;
 using Nop.Services.Customers;
 using Nop.Services.Directory;
@@ -39,7 +40,7 @@ using Nop.Web.Models.Catalog;
 using NUglify.Helpers;
 using IProductModelFactory = Nop.Web.Areas.Admin.Factories.IProductModelFactory;
 
-namespace NopStation.Plugin.Misc.FacebookShop.Services
+namespace Nop.Plugin.NopStation.FacebookShop.Services
 {
     public partial class FacebookShopIOManager : IFacebookShopIOManager
     {
@@ -151,7 +152,7 @@ namespace NopStation.Plugin.Misc.FacebookShop.Services
 
             try
             {
-                var basePath = _nopFileProvider.MapPath("~/Plugins/NopStation.Plugin.Misc.FacebookShop/Files/");
+                var basePath = _nopFileProvider.MapPath("~/Plugins/NopStation.FacebookShop/Files/");
                 var excelFilePath =
                     _nopFileProvider.Combine(_nopFileProvider.MapPath(basePath), FacebookShopDefaults.FileName);
                 //var sw = await _nopFileProvider.ReadAllTextAsync(excelFilePath, Encoding.UTF8);
@@ -179,6 +180,7 @@ namespace NopStation.Plugin.Misc.FacebookShop.Services
                         {
                             if (!item.ShopItem.IncludeInFacebookShop)
                                 continue;
+
                             var model = await _facebookShopModelFactory.PrepareFacebookShopProductModelAsync(item.Product, item.ShopItem);
 
                             var aShopItem = new ItemModel();
@@ -248,8 +250,9 @@ namespace NopStation.Plugin.Misc.FacebookShop.Services
                 ? model.ProductPrice.Price
                 : model.ProductPrice.PriceWithDiscount);
 
-
-            itemModel.Image_Link = model.DefaultPictureModel.FullSizeImageUrl;
+            itemModel.Image_Link = string.IsNullOrEmpty(item.ShopItem.CustomImageUrl) 
+                ? model.DefaultPictureModel.FullSizeImageUrl 
+                : item.ShopItem.CustomImageUrl;
 
             itemModel.Additional_Image_Link = model.PictureModels?.Any() ?? false
                 ? model.PictureModels.Last().FullSizeImageUrl
@@ -274,12 +277,11 @@ namespace NopStation.Plugin.Misc.FacebookShop.Services
             itemModel.Gender = Convert.ToString(item.ShopItem.GenderType);
             itemModel.Item_Group_Id = Convert.ToString(model.ProductId);
 
-
             if (string.IsNullOrEmpty(itemModel.Availability))
             {
                 itemModel.Availability = "In Stock"; // default value 
             }
-            
+
             itemModel.Age_Group = item.ShopItem.AgeGroupType;
         }
         private async Task<List<ItemModel>> GetItemModelsProductAttributeCombinationsWithValuesAsync(Product product, ItemModel itemModel, FacebookShopProductModel rootProductModel)
@@ -316,17 +318,15 @@ namespace NopStation.Plugin.Misc.FacebookShop.Services
                         Gender = itemModel.Gender,
                         Item_Group_Id = Convert.ToString(item.ProductId),
                         Age_Group = itemModel.Age_Group
-
                     };
-
                     if (string.IsNullOrEmpty(itemModelCopy.Availability))
                     {
                         itemModelCopy.Availability = "In Stock"; // default value 
                     }
-
                     //var salePriceDecimal = decimal.TryParse(await GetProductAttributeCombinationSalePriceAsync(product, attributeCombination.AttributesXml), out var price) ? price : 0;
 
                     //var priceDecimal = decimal.TryParse(rootProductModel.ProductPrice.Price, out var decimalValue) ? decimalValue : 0;
+
                     var salePriceDecimal = decimal.TryParse(!string.IsNullOrEmpty(itemModelCopy.Sale_Price)
                         ? Regex.Replace(itemModelCopy.Sale_Price, @"[^0-9.]+", "")
                         : "", out var decimalPrice) ? decimalPrice : 0;
@@ -336,7 +336,6 @@ namespace NopStation.Plugin.Misc.FacebookShop.Services
                         itemModelCopy.Price = await FormatPriceForFacebookAsync(Convert.ToString(salePriceDecimal));
                         itemModelCopy.Sale_Price = "";
                     }
-
 
                     var attributes = item.AttributesXml.Split("<br />");
                     foreach (var attribute in attributes)
@@ -394,7 +393,7 @@ namespace NopStation.Plugin.Misc.FacebookShop.Services
                 }
             }
 
-            itemModels = System.Linq.Enumerable.DistinctBy(itemModels, x => x.Id).ToList();
+            itemModels = itemModels.DistinctBy(x => x.Id).ToList();
             itemModels = itemModels.GroupBy(m => new { m.Sale_Price, m.Color, m.Size })
                 .Select(group => group.Last())  // instead of First you can also apply your logic here what you want to take, for example an OrderBy
                 .ToList();
@@ -419,6 +418,7 @@ namespace NopStation.Plugin.Misc.FacebookShop.Services
         }
         private async Task<string> GetProductAttributeCombinationSalePriceAsync(Product product, string attributeXml)
         {
+
             //we do not calculate price of "customer enters price" option is enabled
             var (finalPrice, _, _) = await _shoppingCartService.GetUnitPriceAsync(product,
                 await _workContext.GetCurrentCustomerAsync(),
@@ -429,9 +429,8 @@ namespace NopStation.Plugin.Misc.FacebookShop.Services
             var finalPriceWithDiscount = await _currencyService.ConvertFromPrimaryStoreCurrencyAsync(finalPriceWithDiscountBase, await _workContext.GetWorkingCurrencyAsync());
             // discounted price
             return finalPriceWithDiscount != product.Price ?
-                Convert.ToString(finalPriceWithDiscount, CultureInfo.InvariantCulture) : 
+                Convert.ToString(finalPriceWithDiscount, CultureInfo.InvariantCulture) :
                 Convert.ToString(product.Price, CultureInfo.InvariantCulture);
-            ;
         }
 
         private async Task<string> FormatPriceForFacebookAsync(string price)

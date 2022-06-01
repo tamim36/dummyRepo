@@ -4,7 +4,7 @@ using Nop.Web.Areas.Admin.Models.Catalog;
 using Nop.Web.Framework.Models;
 using Nop.Web.Framework.Mvc.ModelBinding;
 
-namespace NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Models
+namespace Nop.Plugin.NopStation.FacebookShop.Areas.Admin.Models
 {
     public record ShopItemModel : BaseNopEntityModel, ILocalizedModel<ShopItemLocalizedModel>
     {
@@ -13,6 +13,7 @@ namespace NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Models
             ProductSearchModel = new ProductSearchModel();
             AvailableGenders = new List<SelectListItem>();
             AvailableAgeGroups = new List<SelectListItem>();
+            AvailableProductConditions = new List<SelectListItem>();
             Locales = new List<ShopItemLocalizedModel>();
         }
         [NopResourceDisplayName("Admin.NopStation.FacebookShop.Fields.IncludeInFacebookShop")]
@@ -36,11 +37,17 @@ namespace NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Models
         public string Brand { get; set; }
         [NopResourceDisplayName("Admin.NopStation.FacebookShop.Fields.AgeGroupType")]
         public string AgeGroupType { get; set; }
+        [NopResourceDisplayName("Admin.NopStation.FacebookShop.Fields.CustomImageUrl")]
+        public string CustomImageUrl { get; set; }
+
+        [NopResourceDisplayName("Admin.NopStation.FacebookShop.Fields.ProductCondition")]
+        public int ProductCondition { get; set; }
+
         public ProductSearchModel ProductSearchModel { get; set; }
 
         public IList<SelectListItem> AvailableGenders { get; set; }
         public IList<SelectListItem> AvailableAgeGroups { get; set; }
-
+        public IList<SelectListItem> AvailableProductConditions { get; set; }
         public IList<ShopItemLocalizedModel> Locales { get; set; }
     }
     public class ShopItemLocalizedModel : ILocalizedLocaleModel

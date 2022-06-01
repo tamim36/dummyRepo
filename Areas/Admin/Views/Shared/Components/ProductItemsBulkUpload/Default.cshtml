@@ -1,4 +1,7 @@
-﻿<div class="btn-group">
+﻿@{
+    var modelIds = "";
+}
+<div class="btn-group">
     <button type="button" class="btn btn-success">
         <i class="fab fa-facebook-f"></i>
         @T("Admin.NopStation.FacebookShop.Menu.FacebookShop")
@@ -36,7 +39,7 @@
     </ul>
 </div>
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('#facebook-shop-add-selected').click(function(e) {
             e.preventDefault();
             var ids = selectedIds.join(",");

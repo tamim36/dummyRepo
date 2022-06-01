@@ -7,17 +7,18 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Nop.Core;
 using Nop.Core.Infrastructure;
-using NopStation.Plugin.Misc.FacebookShop.Services;
+using Nop.Plugin.NopStation.Core.Controllers;
+using Nop.Plugin.NopStation.Core.Helpers;
+using Nop.Plugin.NopStation.FacebookShop.Services;
 using Nop.Services.Logging;
-using NopStation.Plugin.Misc.Core.Controllers;
 
-namespace NopStation.Plugin.Misc.FacebookShop.Controllers
+namespace Nop.Plugin.NopStation.FacebookShop.Controllers
 {
     public class FacebookShopCatalogController : NopStationPublicController
     {
         #region Properties
         private readonly INopFileProvider _fileProvider;
-        private readonly ILogger _logger;
+        private readonly ILogger _logger; 
         #endregion
 
         #region Ctor
@@ -26,7 +27,7 @@ namespace NopStation.Plugin.Misc.FacebookShop.Controllers
         {
             _fileProvider = fileProvider;
             _logger = logger;
-        }
+        } 
         #endregion
 
         #region Methods
@@ -34,7 +35,7 @@ namespace NopStation.Plugin.Misc.FacebookShop.Controllers
         {
             try
             {
-                var basePath = _fileProvider.MapPath("~/Plugins/NopStation.Plugin.Misc.FacebookShop/Files/");
+                var basePath = _fileProvider.MapPath("~/Plugins/NopStation.FacebookShop/Files/");
                 var excelFilePath = _fileProvider.Combine(_fileProvider.MapPath(basePath), FacebookShopDefaults.FileName);
                 var bytes = await _fileProvider.ReadAllBytesAsync(excelFilePath);
                 return File(bytes, MimeTypes.TextXlsx, FacebookShopDefaults.FileName);

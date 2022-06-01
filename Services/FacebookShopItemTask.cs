@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Nop.Services.ScheduleTasks;
 using Task = System.Threading.Tasks.Task;
+using Nop.Services.Tasks;
 
-namespace NopStation.Plugin.Misc.FacebookShop.Services
+namespace Nop.Plugin.NopStation.FacebookShop.Services
 {
     public class FacebookShopItemTask : IScheduleTask
     {
@@ -24,7 +24,7 @@ namespace NopStation.Plugin.Misc.FacebookShop.Services
         public async Task ExecuteAsync()
         {
             await _facebookShopIOManager.WriteOrUpdateShopItemToExcelAsync();
-        }
+        } 
         #endregion
     }
 }

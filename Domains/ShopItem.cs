@@ -1,7 +1,7 @@
 ﻿using Nop.Core;
 using Nop.Core.Domain.Localization;
 
-namespace NopStation.Plugin.Misc.FacebookShop.Domains
+namespace Nop.Plugin.NopStation.FacebookShop.Domains
 {
     public partial class ShopItem : BaseEntity, ILocalizedEntity
     {
@@ -12,11 +12,19 @@ namespace NopStation.Plugin.Misc.FacebookShop.Domains
         public int FacebookProductCategory { get; set; }
         public string Brand { get; set; }
         public string AgeGroupType { get; set; }
+        public string CustomImageUrl { get; set; } 
+        public int ProductCondition { get; set; } 
 
-        public GenderType GenderType
+        public GenderType GenderType 
         {
             get => (GenderType)GenderTypeId;
             set => GenderTypeId = (int)value;
+        }
+
+        public ProductConditionType ProductConditionType
+        {
+            get => (ProductConditionType)ProductCondition;
+            set => ProductCondition = (int)value;
         }
     }
 }

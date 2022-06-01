@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
 using Nop.Core.Domain.Catalog;
 using Nop.Core.Domain.Directory;
-using NopStation.Plugin.Misc.FacebookShop.Domains;
-using NopStation.Plugin.Misc.FacebookShop.Models;
+using Nop.Plugin.NopStation.FacebookShop.Domains;
+using Nop.Plugin.NopStation.FacebookShop.Models;
 
-namespace NopStation.Plugin.Misc.FacebookShop.Factories
+namespace Nop.Plugin.NopStation.FacebookShop.Factories
 {
     public partial interface IFacebookShopModelFactory
     {

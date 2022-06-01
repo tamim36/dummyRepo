@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Nop.Web.Framework.Mvc.ModelBinding;
 
-namespace NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Models
+namespace Nop.Plugin.NopStation.FacebookShop.Areas.Admin.Models
 {
     public class CsvFileUpdateModel
     {

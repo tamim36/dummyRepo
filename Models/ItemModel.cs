@@ -1,6 +1,6 @@
 ﻿using CsvHelper.Configuration.Attributes;
 
-namespace NopStation.Plugin.Misc.FacebookShop.Models
+namespace Nop.Plugin.NopStation.FacebookShop.Models
 {
     public class ItemModel
     {

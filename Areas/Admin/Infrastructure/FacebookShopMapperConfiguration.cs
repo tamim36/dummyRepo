@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Nop.Core.Infrastructure.Mapper;
-using NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Models;
-using NopStation.Plugin.Misc.FacebookShop.Domains;
+using Nop.Plugin.NopStation.FacebookShop.Areas.Admin.Models;
+using Nop.Plugin.NopStation.FacebookShop.Domains;
 
-namespace NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Infrastructure
+namespace Nop.Plugin.NopStation.FacebookShop.Areas.Admin.Infrastructure
 {
     public class FacebookShopMapperConfiguration : Profile, IOrderedMapperProfile
     {
@@ -18,7 +18,7 @@ namespace NopStation.Plugin.Misc.FacebookShop.Areas.Admin.Infrastructure
             CreateMap<ShopItem, ShopItemModel>()
                 .ForMember(model => model.AvailableGenders, options => options.Ignore())
                 .ForMember(model => model.AvailableAgeGroups, options => options.Ignore())
-
+                .ForMember(model => model.AvailableProductConditions, options => options.Ignore())
                 .ForMember(model => model.CustomProperties, options => options.Ignore());
 
             CreateMap<ShopItemModel, ShopItem>();
