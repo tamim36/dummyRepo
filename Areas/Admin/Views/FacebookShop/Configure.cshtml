@@ -1,0 +1,68 @@
+﻿@using Microsoft.AspNetCore.Http
+@model ConfigurationModel
+@inject Nop.Core.IWebHelper webHelper
+
+@{
+    Layout = "_AdminLayout";
+    NopHtml.SetActiveMenuItemSystemName("FacebookShop.Configuration");
+    ViewBag.PageTitle = T("Admin.NopStation.FacebookShop.Configuration").Text;
+    var configurationDetails = T("Admin.NopStation.FacebookShop.ConfigurationDetails").Text;
+    var url = Url.Action("GetCatalogFeed", 
+        "FacebookShopCatalog", 
+        new { fileName = "catalog_products.csv" },
+        webHelper.GetCurrentRequestProtocol()).Replace("/Admin","");
+    var configurationDetailsWithFileUrl = configurationDetails?.Replace("_fileUrl_", url);
+}
+
+<form asp-controller="FacebookShop" asp-action="Configure" method="post">
+
+    <div class="content-header clearfix">
+        <h1 class="float-left">
+            @T("Admin.NopStation.FacebookShop.Configuration")
+        </h1>
+        <div class="float-right">
+            <button type="submit" name="save" class="btn btn-primary">
+                <i class="far fa-save"></i>
+                @T("Admin.Common.Save")
+            </button>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="content-header">
+                @Html.Raw(configurationDetailsWithFileUrl)
+            </div>
+            <div class="form-horizontal">
+                @await Component.InvokeAsync("StoreScopeConfiguration")
+                <div asp-validation-summary="All"></div>
+                <div class="cards-group">
+                    <div class="card card-default">
+                        <div class="card-body">
+
+                            <div class="form-group row">
+                                <div class="col-md-4">
+                                    <nop-override-store-checkbox asp-for="PrimaryLanguageId_OverrideForStore" asp-input="PrimaryLanguageId" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                    <nop-label asp-for="PrimaryLanguageId" />
+                                </div>
+                                <div class="col-md-8">
+                                    <nop-select asp-for="PrimaryLanguageId" asp-items="@Model.AvailableLanguages" />
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-4">
+                                    <nop-override-store-checkbox asp-for="PrimaryCurrencyId_OverrideForStore" asp-input="PrimaryCurrencyId" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                                    <nop-label asp-for="PrimaryCurrencyId" />
+                                </div>
+                                <div class="col-md-8">
+                                    <nop-select asp-for="PrimaryCurrencyId" asp-items="@Model.AvailableCurrencies" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>

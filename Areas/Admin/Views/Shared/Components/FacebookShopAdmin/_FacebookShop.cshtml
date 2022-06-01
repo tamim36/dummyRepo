@@ -1,0 +1,142 @@
+﻿@model ShopItemModel
+
+@{
+    NopHtml.AddCssFileParts("/Plugins/NopStation.Plugin.Misc.FacebookShop/contents/css/Select2.css",string.Empty);
+    NopHtml.AddScriptParts(ResourceLocation.Head,"https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js");
+}
+
+<script>
+    $(document).ready(function() {
+        $("#@Html.IdFor(model => model.IncludeInFacebookShop)").change(toggleOtherInfos);
+        $("#@Html.IdFor(model => model.IsOverwriteBrandSelected)").change(toggleBrandDiv);
+        toggleOtherInfos();
+        toggleBrandDiv();
+
+        $.ajax({
+            url: "@Url.Action("GetGoogleProductCategoriesList", "FacebookShop")",
+            type: "GET",
+            success: function(data, textStatus, jqXHR)
+            {
+                var xdata = $.map(data, function (obj) {
+                    obj.text = obj.text || obj.name;
+                    return obj;
+                });
+
+                $('#@Html.IdFor(model => model.GoogleProductCategory)').select2({
+                    width: 'resolve',
+                    data:xdata,
+                    minimumInputLength: 3,
+                    placeholder: 'Enter first 3 letters of Product Category',
+                    allowClear: true
+                });
+                $('#@Html.IdFor(model => model.GoogleProductCategory)').val('@Model.GoogleProductCategory'); // Select the option with a value of '1'
+                $('#@Html.IdFor(model => model.GoogleProductCategory)').trigger('change'); // Notify any JS components that the value changed
+            },
+            error: function (request, textStatus, errorThrown) {
+               console.log(errorThrown);
+            },
+            cache: true
+
+        });
+    });
+    function toggleOtherInfos() {
+        if ($('#@Html.IdFor(model => model.IncludeInFacebookShop)').is(':checked')) {
+            $('#@Html.IdFor(model => model.GenderTypeId)').prop('required',true);
+            $('#@Html.IdFor(model => model.GoogleProductCategory)').prop('required',true);
+
+            $('#pnlIncludeInFacebookShop').show();
+        } else {
+            $('#pnlIncludeInFacebookShop').hide();
+            $('#@Html.IdFor(model => model.GenderTypeId)').prop('required',false);
+            $('#@Html.IdFor(model => model.GoogleProductCategory)').prop('required',false);
+        }
+    }
+    function toggleBrandDiv() {
+        if ($('#@Html.IdFor(model => model.IsOverwriteBrandSelected)').is(':checked')) {
+            $('#@Html.IdFor(model => model.Brand)').prop('required',true);
+            $('#pnlIsOverwriteBrandSelected').show();
+        } else {
+            $('#@Html.IdFor(model => model.Brand)').prop('required',false);
+            $('#pnlIsOverwriteBrandSelected').hide();
+        }
+    }
+</script>
+<input asp-for="ProductId" type="hidden" />
+<div class="card-body">
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="IncludeInFacebookShop" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="IncludeInFacebookShop" />
+        </div>
+    </div>
+
+    <nop-nested-setting asp-for="IncludeInFacebookShop" id="pnlIncludeInFacebookShop">
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-label asp-for="GenderTypeId" />
+            </div>
+            <div class="col-md-9">
+                <nop-select asp-for="GenderTypeId" asp-items="@Model.AvailableGenders" asp-required="true" />
+                <span asp-validation-for="GenderTypeId"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-label asp-for="AgeGroupType" />
+            </div>
+            <div class="col-md-9">
+                <nop-select asp-for="AgeGroupType" asp-items="@Model.AvailableAgeGroups" asp-required="true" />
+                <span asp-validation-for="AgeGroupType"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-label asp-for="GoogleProductCategory" />
+            </div>
+            <div class="col-md-9">
+                <select asp-for="GoogleProductCategory" style="width: 98.50%;"></select>
+                <span asp-validation-for="GoogleProductCategory"></span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-label asp-for="IsOverwriteBrandSelected" />
+            </div>
+            <div class="col-md-9">
+                <nop-editor asp-for="IsOverwriteBrandSelected" />
+            </div>
+        </div>
+        <nop-nested-setting asp-for="IsOverwriteBrandSelected" id="pnlIsOverwriteBrandSelected">
+            @(await Html.LocalizedEditorAsync<ShopItemModel, ShopItemLocalizedModel>("shopitem-info-localized",
+                @<div>
+                    <div class="form-group row">
+                        <div class="col-md-3">
+                            <nop-label asp-for="@Model.Locales[item].Brand" />
+                        </div>
+                        <div class="col-md-9">
+                            <nop-editor asp-for="@Model.Locales[item].Brand" />
+                            <span asp-validation-for="@Model.Locales[item].Brand"></span>
+                        </div>
+                    </div>
+
+                    <input type="hidden" asp-for="@Model.Locales[item].LanguageId" />
+                </div>
+            ,@<div>
+                    <div class="form-group row">
+                        <div class="col-md-3">
+                            <nop-label asp-for="Brand" />
+                        </div>
+                        <div class="col-md-9">
+                            <nop-editor asp-for="Brand" asp-required="true" />
+                            <span asp-validation-for="Brand"></span>
+                        </div>
+                    </div>
+                </div>)
+            )
+        </nop-nested-setting>
+    </nop-nested-setting>
+</div>

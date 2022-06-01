@@ -1,0 +1,44 @@
+﻿@model CsvFileUpdateModel
+
+@{
+ 
+    Layout = "_AdminLayout";
+}
+
+<form asp-controller="FacebookShop" asp-action="UploadFacebookCatalogCsvFile" enctype="multipart/form-data" onsubmit="return confirm(' @T("Admin.NopStation.FacebookShop.ConfirmSubmit")');">
+    <div class="content-header clearfix">
+        <h1 class="float-left">
+            @T("Admin.NopStation.FacebookShop.UploadYourCSVFile")
+        </h1>
+        <div class="float-right">
+            &nbsp;
+        </div>
+    </div>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="form-horizontal">
+                <div class="cards-group">
+                    <div class="card card-default card-search card-popup">
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <nop-label asp-for="CatalogFile" />
+                                </div>
+                                <div class="col-md-9">
+                                    <nop-editor asp-for="CatalogFile" asp-required="true"/>
+                                    <span asp-validation-for="CatalogFile"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" name="save" class="btn btn-primary">
+                                <i class="far fa-save"></i>
+                                @T("Admin.Common.Save")
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>

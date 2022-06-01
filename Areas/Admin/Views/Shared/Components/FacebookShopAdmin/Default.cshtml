@@ -1,0 +1,9 @@
+﻿@model ShopItemModel
+@{
+    const string hideFacebookshopAttributeName = "FacebookShop.HideEnableBlock";
+    var hideFacebookShopBlock = await genericAttributeService.GetAttributeAsync<bool>(await workContext.GetCurrentCustomerAsync(), hideFacebookshopAttributeName);
+}
+
+<nop-card asp-name="facebook-shop" asp-icon="fab fa-facebook" asp-title="@T("Admin.NopStation.FacebookShop.Tab.Enable")" asp-hide-block-attribute-name="@hideFacebookshopAttributeName" asp-hide="@hideFacebookShopBlock" asp-advanced="true">
+    @await Html.PartialAsync("_FacebookShop.cshtml", Model)
+</nop-card>

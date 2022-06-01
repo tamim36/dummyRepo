@@ -1,0 +1,88 @@
+﻿<div class="btn-group">
+    <button type="button" class="btn btn-success">
+        <i class="fab fa-facebook-f"></i>
+        @T("Admin.NopStation.FacebookShop.Menu.FacebookShop")
+    </button>
+    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+        <span class="caret"></span>
+        <span class="sr-only">&nbsp;</span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+        <li class="dropdown-item">
+            <button asp-controller="FacebookShop" asp-action="BulkItemsAddAllView" type="submit" name="include-all-fbs-items">
+                <i class="fa fa-plus"></i>
+                @T("Admin.NopStation.FacebookShop.AddAll")
+            </button>
+        </li>
+        <li class="dropdown-item">
+            <button type="button" id="facebook-shop-add-selected">
+                <i class="fa fa-plus"></i>
+                @T("Admin.NopStation.FacebookShop.AddSelected")
+            </button>
+        </li>
+        <li class="dropdown-divider"></li>
+        <li class="dropdown-item">
+            <button asp-controller="FacebookShop" asp-action="DeleteAllProductShopItems" type="submit" name="exclude-all-fbs-items">
+                <i class="fas fa-trash-alt"></i>
+                @T("Admin.NopStation.FacebookShop.RemoveAll")
+            </button>
+        </li>
+        <li class="dropdown-item">
+            <button type="button" id="facebook-shop-remove-selected">
+                <i class="fas fa-trash-alt"></i>
+                @T("Admin.NopStation.FacebookShop.RemoveSelected")
+            </button>
+        </li>
+    </ul>
+</div>
+<script>
+    $(document).ready(function() {
+        $('#facebook-shop-add-selected').click(function(e) {
+            e.preventDefault();
+            var ids = selectedIds.join(",");
+            if (!ids) {
+                alert('@T("Admin.NopStation.FacebookShop.NoProductSelected")');
+            } else {
+                var link = '@Url.Action("BulkItemsAddPopup", "FacebookShop")?productIds=' + ids;
+
+                OpenWindow(link,
+                    800,
+                    800,
+                    true);
+                //addTheSelectedItemsToFacebookShop(ids);
+                updateTable('#products-grid');
+            }
+            return false;
+        });
+
+        $('#facebook-shop-remove-selected').click(function (e) {
+            e.preventDefault();
+            var ids = selectedIds.join(",");
+            if (!ids) {
+                alert('@T("Admin.NopStation.FacebookShop.NoProductSelected")');
+            }
+            else {
+                removeTheSelectedItemsFromFacebookShop(ids);
+            }
+            return false;
+        });
+
+        function removeTheSelectedItemsFromFacebookShop(ids) {
+            console.log("delete ids", ids);
+            var link = '@Url.Action("DeleteSelectedProductShopItems", "FacebookShop")?selectedIds=' + ids;
+
+            $.ajax({
+                dataType: "json",
+                contentType: "application/json",
+                cache: false,
+                type: "POST",
+                url: link,
+                success: function (data) {
+                    alert('@T("Admin.NopStation.FacebookShop.RemovedSuccessfully")');
+                    updateTable('#products-grid');
+                }
+            });
+        }
+
+    });
+</script>

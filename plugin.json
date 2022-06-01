@@ -1,0 +1,12 @@
+﻿{
+  "Group": "Nop-Station",
+  "FriendlyName": "Nop-Station Facebook shop",
+  "SystemName": "NopStation.Plugin.Misc.FacebookShop",
+  "Version": "4.50.1.2",
+  "SupportedVersions": [ "4.50" ],
+  "Author": "Nop-Station Team",
+  "DisplayOrder": 1,
+  "FileName": "NopStation.Plugin.Misc.FacebookShop.dll",
+  "Description": "This plugin allows to automatic import catalog in your facebook shop",
+  "DependsOnSystemNames": [ "NopStation.Core" ]
+}
